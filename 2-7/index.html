@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TodoList_子组件向副组件传值</title>
+        <script src='./vue.js'></script>
+    </head>
+    <body>
+        <div id="app">
+            <input type="text" v-model="inputValue">
+            <button v-on:click="handlerBtnClick">提交</button>
+            <ul>
+                <!-- 副组件 v-on省略写@，v-bind直接省略-->
+                <todo-item v-bind:content="item" 
+                           v-bind:index="index"
+                           v-for="(item, index) in list"
+                           @delete="handleItemDelete">
+                </todo-item>
+            </ul>
+        </div>
+
+        <script>
+            // //定义全局（子）组件
+            // Vue.component("TodoItem",{
+            //     props:['content'],//接收
+            //     template:"<li>{{content}}</li>"
+            // })
+            //定义局部（子）组件(需要注册在实例中)
+            var TodoItem = {
+                props:['content','index'],
+                template:"<li @click='handleItemClick'>{{content}}</li>",
+                methods:{
+                  handleItemClick: function(){
+                    this.$emit("delete",this.index);
+                  }
+                }
+            }
+
+            var app = new Vue({
+                el:"#app",
+                components:{
+                    TodoItem:TodoItem
+                },
+                data:{
+                    list:[],
+                    inputValue:''
+                },
+                methods:{
+                    handlerBtnClick:function(){
+                        this.list.push(this.inputValue)
+                        this.inputValue=''
+                    },
+                    handleItemDelete:function(index){
+                        this.list.splice(index,1)//从下标开始，删除一项
+                    }
+                }
+            })
+        </script>
+
+    </body> 
+</html>

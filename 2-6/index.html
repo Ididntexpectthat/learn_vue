@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TodoList_副组件向子组件传值</title>
+        <script src='./vue.js'></script>
+    </head>
+    <body>
+        <div id="app">
+            <input type="text" v-model="inputValue">
+            <button v-on:click="handlerBtnClick">提交</button>
+            <ul>
+                <!-- 副组件 -->
+                <todo-item v-bind:content="item" 
+                           v-for="item in list">
+                </todo-item>
+            </ul>
+        </div>
+
+        <script>
+            // //定义全局（子）组件
+            // Vue.component("TodoItem",{
+            //     props:['content'],//接收
+            //     template:"<li>{{content}}</li>"
+            // })
+            //定义局部（子）组件(需要注册在实例中)
+            var TodoItem = {
+                props:['content'],
+                template:"<li>{{content}}</li>"
+            }
+
+            var app = new Vue({
+                el:"#app",
+                components:{
+                    TodoItem:TodoItem
+                },
+                data:{
+                    list:[],
+                    inputValue:''
+                },
+                methods:{
+                    handlerBtnClick:function(){
+                        this.list.push(this.inputValue)
+                        this.inputValue=''
+                    }
+                }
+            })
+        </script>
+
+    </body> 
+</html>
